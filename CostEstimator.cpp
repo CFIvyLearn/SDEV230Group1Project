@@ -1,45 +1,39 @@
 #include "CostEstimator.h"
 #include <fstream>
 #include <algorithm>
+#include <iostream>
 
 void CostEstimator::addItem(const Item& item) {
     items.push_back(item);
-    std::cout << "Item added successfully.\n";
 }
 
 void CostEstimator::removeItem(const std::string& itemName) {
-    auto it = std::remove_if(items.begin(), items.end(), [&itemName](const Item& item) {
-        return item.name == itemName;
-    });
-    items.erase(it, items.end());
-    std::cout << "Item removed.\n";
+    items.erase(std::remove_if(items.begin(), items.end(), 
+        [&itemName](const Item& item) { return item.getName() == itemName; }), items.end());
 }
 
 void CostEstimator::clearItems() {
     items.clear();
-    std::cout << "All items cleared.\n";
 }
 
 void CostEstimator::saveItems() const {
-    std::ofstream file("cost_estimate.txt");
+    std::ofstream file("items.txt");
     for (const auto& item : items) {
-        file << item.name << " " << item.quantity << " " << item.unit_price << "\n";
+        file << item.getName() << " " << item.getQuantity() << " " << item.getUnitPrice() << "\n";
     }
     file.close();
-    std::cout << "Items saved to file.\n";
 }
 
 void CostEstimator::showEstimates() const {
-    double totalCost = 0;
+    double totalCost = 0.0;
     for (const auto& item : items) {
-        totalCost += item.getTotalCost();
-        std::cout << item.name << ": " << item.quantity << " * $" << item.unit_price << " = $" << item.getTotalCost() << "\n";
+        totalCost += item.getQuantity() * item.getUnitPrice();
     }
-    std::cout << "Total Cost: $" << totalCost << "\n";
+    std::cout << "Total cost: " << totalCost << "\n";
 }
 
 void CostEstimator::loadItems() {
-    std::ifstream file("cost_estimate.txt");
+    std::ifstream file("items.txt");
     std::string name;
     int quantity;
     double unit_price;
@@ -47,5 +41,4 @@ void CostEstimator::loadItems() {
         items.push_back(Item(name, quantity, unit_price));
     }
     file.close();
-    std::cout << "Items loaded from file.\n";
 }
