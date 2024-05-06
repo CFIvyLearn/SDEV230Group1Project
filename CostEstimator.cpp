@@ -4,45 +4,61 @@
 #include <iostream>
 
 void CostEstimator::addItem(const Item& item) {
-    items.push_back(item); // Add an item to the list of items
+    if (itemCount < MAX_ITEMS) {
+        items[itemCount] = item; // Add the item to the items array
+        totalCosts[itemCount] = item.getQuantity() * item.getUnitPrice(); // Calculate the total cost for the item
+        itemCount++; // Increment the item count
+    } else {
+        // Handle error: array is full
+    }
 }
 
 void CostEstimator::removeItem(const std::string& itemName) {
-    // Remove an item from the list of items based on its name
-    items.erase(std::remove_if(items.begin(), items.end(), 
-        [&itemName](const Item& item) { return item.getName() == itemName; }), items.end());
+    for (int i = 0; i < itemCount; i++) {
+        if (items[i].getName() == itemName) {
+            for (int j = i; j < itemCount - 1; j++) {
+                items[j] = items[j + 1]; // Shift the items array to remove the item
+                totalCosts[j] = totalCosts[j + 1]; // Shift the totalCosts array to remove the corresponding total cost
+            }
+            itemCount--; // Decrement the item count
+            break;
+        }
+    }
 }
 
 void CostEstimator::clearItems() {
-    items.clear(); // Clear all items from the list
+    itemCount = 0; // Reset the item count to zero
 }
 
 void CostEstimator::saveItems() const {
-    std::ofstream file("items.txt"); // Open a file for writing
-    for (const auto& item : items) {
-        // Write each item's name, quantity, and unit price to the file
-        file << item.getName() << " " << item.getQuantity() << " " << item.getUnitPrice() << "\n";
+    std::ofstream file("items.txt"); // Open the file for writing
+    for (int i = 0; i < itemCount; i++) {
+        file << items[i].getName() << " " // Write the item name
+             << items[i].getQuantity() << " " // Write the item quantity
+             << items[i].getUnitPrice() << "\n"; // Write the item unit price
     }
     file.close(); // Close the file
 }
 
 void CostEstimator::showEstimates() const {
-    double totalCost = 0.0;
-    for (const auto& item : items) {
-        // Calculate the total cost by multiplying each item's quantity by its unit price
-        totalCost += item.getQuantity() * item.getUnitPrice();
+    double finalTotal = 0.0;
+    for (int i = 0; i < itemCount; i++) {
+        std::cout << "Item: " << items[i].getName()
+                  << ", Quantity: " << items[i].getQuantity()
+                  << ", Unit Price: " << items[i].getUnitPrice()
+                  << ", Total Cost: " << totalCosts[i] << "\n";
+        finalTotal += totalCosts[i]; // Add the total cost of the current item to the final total
     }
-    std::cout << "Total cost: " << totalCost << "\n"; // Print the total cost
+    std::cout << "Final Total: " << finalTotal << "\n"; // Print the final total
 }
 
 void CostEstimator::loadItems() {
-    std::ifstream file("items.txt"); // Open a file for reading
+    std::ifstream file("items.txt"); // Open the file for reading
     std::string name;
     int quantity;
     double unit_price;
     while (file >> name >> quantity >> unit_price) {
-        // Read each item's name, quantity, and unit price from the file and add it to the list
-        items.push_back(Item(name, quantity, unit_price));
+        addItem(Item(name, quantity, unit_price)); // Add each item from the file to the items array
     }
     file.close(); // Close the file
 }

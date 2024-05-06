@@ -2,48 +2,34 @@
 #define COSTESTIMATOR_H
 
 #include "item.h"
-#include <vector>
 
-/**
- * The CostEstimator class represents a cost estimator that calculates estimates for items.
- * This class provides functionality to add, remove, and clear items, as well as save and load items.
- * It also allows for displaying the estimates of the items.
- */
 class CostEstimator {
 public:
-    /**
-     * Adds an item to the cost estimator.
-     * @param item The item to be added.
-     */
+    CostEstimator() : itemCount(0) {} // Initialize itemCount to 0 in the constructor
+
+    // Add an item to the cost estimator
     void addItem(const Item& item);
 
-    /**
-     * Removes an item from the cost estimator.
-     * @param itemName The name of the item to be removed.
-     */
+    // Remove an item from the cost estimator by its name
     void removeItem(const std::string& itemName);
 
-    //Clears all the items from the cost estimator.    
+    // Clear all items from the cost estimator
     void clearItems();
 
-    /**
-     * @brief Saves the items in the cost estimator to a file.
-     * 
-     * The saved items can be loaded later using the loadItems() function.
-     */
+    // Save the items to a file
     void saveItems() const;
 
-    //Displays the estimates of the items in the cost estimator.    
+    // Show the estimates for each item
     void showEstimates() const;
 
-    /**
-     * Loads the items from a file into the cost estimator.
-     * The loaded items replace the existing items in the cost estimator.
-     */
+    // Load items from a file
     void loadItems();
 
 private:
-    std::vector<Item> items; /**< The vector of items in the cost estimator. */
+    static const int MAX_ITEMS = 100; // Maximum number of items
+    Item items[MAX_ITEMS]; // Array of items
+    double totalCosts[MAX_ITEMS]; // Array of total costs
+    int itemCount; // Current number of items
 };
 
 #endif // COSTESTIMATOR_H
