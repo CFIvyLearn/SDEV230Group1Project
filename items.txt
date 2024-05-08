@@ -1,3 +1,0 @@
-planks 12 12
-bricks 32 43
-nails 500 0.01

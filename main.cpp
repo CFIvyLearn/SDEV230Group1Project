@@ -2,6 +2,16 @@
 #include <iostream>
 #include <string>
 
+
+/**
+ * WHEN YOU RIN THE PROGRAM RUN IT USING THE FOLLOWING COMMAND LINES:
+ * g++ -o main main.cpp CostEstimator.cpp item.h CostEstimator.h  
+ * ./main
+ * 
+ * IT WONT WORK FOR SOME REASON IF YOU RUN IT USING THE RUN BUTTON IN VSCODE
+ */
+
+
 int main() {
     CostEstimator estimator; // Create an instance of the CostEstimator class
     bool running = true; // Variable to control the main loop
